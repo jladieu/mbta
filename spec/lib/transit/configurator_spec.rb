@@ -13,17 +13,17 @@ describe Transit::Configurator do
       end
 
       expect(map.routes.size).to eq(1)
-      only_route = map.routes['letters']
+      only_route = map.routes.first
       expect(only_route.id).to eq('letters')
       expect(only_route.name).to eq('letters')
 
       expect(map.stops.size).to eq(3)
-      expect(map.stops['a'].id).to eq('a')
-      expect(map.stops['a'].name).to eq('a')
-      expect(map.stops['b'].id).to eq('b')
-      expect(map.stops['b'].name).to eq('b')
-      expect(map.stops['c'].id).to eq('c')
-      expect(map.stops['c'].name).to eq('c')
+      expect(map.stops[0].id).to eq('a')
+      expect(map.stops[0].name).to eq('a')
+      expect(map.stops[1].id).to eq('b')
+      expect(map.stops[1].name).to eq('b')
+      expect(map.stops[2].id).to eq('c')
+      expect(map.stops[2].name).to eq('c')
     end
 
     it 'allows human friendly names to be specified' do
@@ -40,10 +40,10 @@ describe Transit::Configurator do
       expect(only_route.name).to eq('Names')
 
       expect(map.stops.size).to eq(2)
-      expect(map.stops['a'].id).to eq('a')
-      expect(map.stops['a'].name).to eq('Alice')
-      expect(map.stops['b'].id).to eq('b')
-      expect(map.stops['b'].name).to eq('Bob')
+      expect(map.stops[0].id).to eq('a')
+      expect(map.stops[0].name).to eq('Alice')
+      expect(map.stops[1].id).to eq('b')
+      expect(map.stops[1].name).to eq('Bob')
     end
 
     it 'can create a realistic TransitMap using the DSL with human-friendly names' do
@@ -93,8 +93,8 @@ describe Transit::Configurator do
         end
       end
 
-      expect(mini_mbta.routes.count).to eq(2)
-      expect(mini_mbta.routes.keys).to eq(['red', 'orange'])
+      expect(mini_mbta.routes.size).to eq(2)
+      expect(mini_mbta.routes.map(&:id)).to eq(['red', 'orange'])
 
       redline = mini_mbta.routes['red']
 

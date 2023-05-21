@@ -15,7 +15,8 @@ class MbtaClient
     @api_key = params[:api_key].presence or raise 'api_key is required'
   end
 
-  # Fetches only routes that have subway route types from the API.
+  # Fetches only routes that have subway route types from the API.  Returns
+  # an array of [route_id, route_name] pairs.
   def fetch_subway_routes
     fields = ['long_name']
 
@@ -25,22 +26,29 @@ class MbtaClient
         request.params['fields[route]'] = fields.join(',')
       end
     end
-    
-    parsed_results.map { |result| Subway.from_parsed_json(result) }
+
+    parsed_results.map do |hash|
+      raise "Unexpected type #{hash['type']}" unless hash['type'] == 'route'
+      [hash['id'], hash['attributes']['long_name']]
+    end
   end
 
+  # Fetches all stops for a given route.  Returns an array of [stop_id, stop_name] pairs.
   def fetch_stops(route_id)
     fields = ['name']
-    parsed_results = fetch_and_parse do 
+    parsed_results = fetch_and_parse do
       connection.get("/stops") do |request|
         request.params['filter[route]'] = route_id
         request.params['fields[stop]'] = fields.join(',')
       end
     end
 
-    parsed_results.map { |result| Stop.from_parsed_json(result) }
+    parsed_results.map do |hash|
+      raise "Unexpected type #{hash['type']}" unless hash['type'] == 'stop'
+      [hash['id'], hash['attributes']['name']]
+    end
   end
-  
+
   private
 
   def fetch_and_parse(&block)

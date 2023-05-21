@@ -7,15 +7,15 @@ require 'active_support/core_ext/object/blank' # for Object#present?
 
 module Transit
   def self.configure(name, &block)
+    raise 'block is required for DSL-based configuration' unless block_given?
     config = Configurator.new(name)
     config.instance_eval(&block)
-
-    return TransitMap.new(config.name, config.routes, config.stops, config.graph)
+    return config.build_map
   end
 
-  # DSL for a TransitMap, primarily to to aid in testing but with the nice benefit
-  # of making building an in-memory transit map easier. Inspired by
-  # https://thoughtbot.com/blog/writing-a-domain-specific-language-in-ruby
+  # DSL for a TransitMap, primarily to to aid in expressive test setup, but also
+  # has the dual use of being usable to build the in-memory transit map. Inspired
+  # by https://thoughtbot.com/blog/writing-a-domain-specific-language-in-ruby
   #
   # Usage:
   #   Transit.configure('My Transit Map') do
@@ -44,10 +44,9 @@ module Transit
 
     def route(id, name=nil, &block)
       raise 'route id is required' unless id.present?
-      route_config = RouteConfigurator.new(id, name, self)
-      route_config.instance_eval(&block)
-      route_config.route.tap do |route|
-        @routes[route.id] = route
+      RouteConfigurator.new(id, name, self).tap do |route_config|
+        route_config.instance_eval(&block) if block_given?
+        @routes[id] = route_config.route
       end
     end
 
@@ -60,6 +59,10 @@ module Transit
 
     def connect_stops(stop1, stop2, connecting_route)
       @graph.add_edge(stop1.id, stop2.id, metadata=connecting_route.id)
+    end
+
+    def build_map
+      TransitMap.new(@name, @routes, @stops, @graph)
     end
   end
 

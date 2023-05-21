@@ -5,10 +5,11 @@ require 'graph'
 # This class is designed to be initialized from a DSL using TransitMap.configure, but it could be initialized from any data source.
 module Transit
   class TransitMap
-    attr_reader :routes
-    attr_reader :stops
-    attr_reader :graph
-
+    # Args:
+    #  name: name of the transit map
+    #  routes: hash of routes (key is route id, value is Route)
+    #  stops: hash of stops (key is stop id, value is Stop)
+    #  graph: graph of stops and routes (see lib/graph)
     def initialize(name, routes, stops, graph)
       @name = name
       @routes = routes
@@ -24,8 +25,7 @@ module Transit
     def self.configure(name, &block)
       config = Configurator.new(name)
       config.instance_eval(&block)
-
-      return TransitMap.new(config.name, config.routes, config.stops, config.graph)
+      TransitMap.new(config.name, config.routes, config.stops, config.graph)
     end
 
     def find_path(start_stop_id, end_stop_id, &block)
@@ -48,6 +48,22 @@ module Transit
       end.compact.uniq
 
       route_ids.map { |route_id| @routes[route_id]}
+    end
+
+    def routes
+      @routes.values
+    end
+
+    def get_route(id)
+      @routes[id]
+    end
+
+    def stops
+      @stops.values
+    end
+
+    def get_stop(id)
+      @stops[id]
     end
   end
 end

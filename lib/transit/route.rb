@@ -7,9 +7,13 @@ module Transit
       @name = name
       @stops = []
     end
-    
+
     def stop_ids
       @stops.map(&:id)
+    end
+
+    def stop_count
+      @stops.size
     end
 
     def connecting_stops
@@ -18,6 +22,14 @@ module Transit
 
     def intersecting_routes
       connecting_stops.flat_map(&:routes).uniq
+    end
+
+    def to_s
+      "Route[#{@id} - #{@name}]"
+    end
+
+    def inspect
+      to_s
     end
   end
 end
