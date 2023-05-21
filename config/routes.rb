@@ -10,7 +10,7 @@ Rails.application.routes.draw do
         get :most_stops, on: :collection
         get :least_stops, on: :collection
       end
-  
+
       resources :stops, only: [] do
         get :connections, on: :collection
       end
