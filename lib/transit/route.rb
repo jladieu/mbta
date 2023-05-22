@@ -1,4 +1,9 @@
 module Transit
+
+  # A route is a collection of stops in a transit system.
+  # Some utility methods are provided to find interesting details about the stops
+  # on the route, but the bulk of the interesting logic about the route is
+  # externalized into a Graph maintained by TransitMap.
   class Route
     attr_reader :id, :name, :stops
 

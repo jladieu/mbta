@@ -1,8 +1,10 @@
 require 'graph'
 
-# A class representing a map of a transit system as a list of Routes, each with many Stops.
+# A class representing a map of a transit system as a list of Routes, each with one or more Stops.
 #
-# This class is designed to be initialized from a DSL using TransitMap.configure, but it could be initialized from any data source.
+# This class is designed to be initialized from a DSL using TransitMap.configure, but it could be initialized
+# from any data source using the provided constructor.  It trusts that the provided routes, stops, and graph
+# are consistent with each other.
 module Transit
   class TransitMap
     # Args:
@@ -15,17 +17,6 @@ module Transit
       @routes = routes
       @stops = stops
       @graph = graph
-    end
-
-    # DSL builder for a TransitMap, primarily to to aid in testing but with the nice benefit
-    # of making building an in-memory transit map easier. Inspired by
-    # https://thoughtbot.com/blog/writing-a-domain-specific-language-in-ruby
-    #
-    # For usage examples, see transit_map_spec.rb
-    def self.configure(name, &block)
-      config = Configurator.new(name)
-      config.instance_eval(&block)
-      TransitMap.new(config.name, config.routes, config.stops, config.graph)
     end
 
     # Returns the shortest path between the start stop and the end stop.  Accepts either stop ID or name.

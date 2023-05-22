@@ -4,7 +4,7 @@
 This is a mini Rails app to implement the integration with the MBTA API for the coding challenge.  However, the Rails app is really just a wrapper for a command line script that is executed using `rake`.  I initially thought I'd provide a cURL-based API but quickly realized Rake would require a lot less bootstrapping.  This probably would be better implemented as a 'ruby gem' which is a much lighter weight construct, but figured having the extra boilerplate wouldn't be too much of a distraction if I provided some rough pointers to the interesting stuff.  There's no database or web server to deal with.
 
 Interesting stuff:
-- [lib/tasks/mbta.rake](lib/tasks/mbta.rake) - This is the top level entry point for the Rake tasks which are explicitly answer the coding challenge questions.
+- [lib/tasks/mbta.rake](lib/tasks/mbta.rake) - This is the top level entry point for the Rake tasks which explicitly answer the coding challenge questions.
 - [lib/graph](lib/graph) - This package contains the graph implementation used to do pathing logic.
 - [lib/transit](lib/transit) - This package contains the model classes for a transit system, as well as a Transit::Configurator for setting one up with an easy-to-use DSL that is helpful for expressing the transit system in test cases.
 - [lib/mbta_client.rb](lib/mbta_client.rb) - This contains the actual HTTP interaction with the MBTA API.

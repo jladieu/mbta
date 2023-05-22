@@ -6,6 +6,7 @@ require 'graph'
 require 'active_support/core_ext/object/blank' # for Object#present?
 
 module Transit
+
   def self.configure(name, &block)
     raise 'block is required for DSL-based configuration' unless block_given?
     config = Configurator.new(name)

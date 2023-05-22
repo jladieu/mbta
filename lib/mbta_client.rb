@@ -16,7 +16,8 @@ class MbtaClient
   end
 
   # Fetches only routes that have subway route types from the API.  Returns
-  # an array of [route_id, route_name] pairs.
+  # an array of [route_id, route_name] pairs.  For discussion on why this approach was
+  # chosen, see the first bullet of the Design Notes in the README.md
   def fetch_subway_routes
     fields = ['long_name']
 

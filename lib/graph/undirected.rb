@@ -1,5 +1,7 @@
 # Inspired by: https://medium.com/@young.scottw/implementing-an-undirected-graph-in-ruby-c11258b3d95b
 module Graph
+
+  # undirected graph, every edge is bidirectional
   class Undirected
     def initialize
       @nodes = {}

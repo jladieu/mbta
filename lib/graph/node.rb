@@ -1,4 +1,5 @@
 module Graph
+  # a node in a graph, implemented as an adjacency list
   class Node
     attr_reader :value
     attr_reader :neighbors_with_metadata
