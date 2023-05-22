@@ -35,7 +35,7 @@ describe Transit::Configurator do
       end
 
       expect(map.routes.size).to eq(1)
-      only_route = map.routes['n']
+      only_route = map.routes.first
       expect(only_route.id).to eq('n')
       expect(only_route.name).to eq('Names')
 
@@ -96,7 +96,7 @@ describe Transit::Configurator do
       expect(mini_mbta.routes.size).to eq(2)
       expect(mini_mbta.routes.map(&:id)).to eq(['red', 'orange'])
 
-      redline = mini_mbta.routes['red']
+      redline = mini_mbta.routes.find { |route| route.id == 'red' }
 
       expect(redline.stop_ids.count).to eq(17)
 
