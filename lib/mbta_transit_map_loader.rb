@@ -2,6 +2,8 @@ require 'mbta_client'
 require 'graph'
 require 'transit'
 
+# Use the provided MbtaClient to load the MBTA subway map of routes & stops, and configure
+# a Transit::TransitMap using the Transit::Configurator.
 class MbtaTransitMapLoader
   def initialize(mbta_client)
     @mbta_client = mbta_client

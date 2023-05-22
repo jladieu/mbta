@@ -21,7 +21,7 @@ namespace :mbta do
     end
   end
 
-  # Question 2
+  # Question 2.1 & 2.2
   task :get_stop_counts => :environment do
     sorted_by_stop_count = load_subway_map.routes.sort_by(&:stop_count)
 
@@ -32,12 +32,39 @@ namespace :mbta do
     puts "#{most_stops.name} has the most stops: #{most_stops.stop_count}"
   end
 
-  # Question 3
+  # Question 2.3
   task :get_connecting_stops => :environment do
     all_stops = load_subway_map.routes.flat_map(&:stops).uniq
 
     all_stops.select(&:intersection?).each do |stop|
-      puts "#{stop.name} connects #{stop.routes.map(&:name)}"
+      puts "#{stop.name} connects (#{stop.routes.map(&:name).join(', ')})"
+    end
+  end
+
+  # Question 3
+  task :get_path_routes, [:from, :to] => :environment do |task, args|
+    raise "Usage: bundle exec rake \"mbta:get_path_routes[Porter,Airport]\"" unless args[:from].present? && args[:to].present?
+
+    routes = load_subway_map.find_path_routes(args[:from], args[:to])
+
+    if routes.present?
+      puts "#{args[:from]} to #{args[:to]} -> #{routes.map(&:name).join(', ')}"
+    else
+      puts "No path found"
+    end
+  end
+
+  # supplement, prints the stops along the path
+  task :get_path, [:from, :to] => :environment do |task, args|
+    raise "Usage: bundle exec rake \"mbta:get_path[Porter,Airport]\"" unless args[:from].present? && args[:to].present?
+    map = load_subway_map
+    path = map.find_path(args[:from], args[:to])
+
+    if path.present?
+      stop_names = path.map(&:value).map { |stop_id| map.get_stop(stop_id).name }
+      puts "#{args[:from]} to #{args[:to]} -> #{stop_names.join(', ')}"
+    else
+      puts "No path found"
     end
   end
 

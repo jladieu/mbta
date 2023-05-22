@@ -28,16 +28,21 @@ module Transit
       TransitMap.new(config.name, config.routes, config.stops, config.graph)
     end
 
-    def find_path(start_stop_id, end_stop_id, &block)
-      raise "Start stop #{start_stop_id} not found" unless @stops[start_stop_id]
-      raise "End stop #{end_stop_id} not found" unless @stops[end_stop_id]
+    # Returns the shortest path between the start stop and the end stop.  Accepts either stop ID or name.
+    # Returns nil if no path can be found.
+    def find_path(start_id_or_name, end_id_or_name, &block)
+      start_stop = find_stop_by_id_or_name(start_id_or_name)
+      end_stop = find_stop_by_id_or_name(end_id_or_name)
+      raise "Start stop #{start_id_or_name} not found" unless start_stop
+      raise "End stop #{end_id_or_name} not found" unless end_stop
 
-      Graph::BfsVisitor.find_path(@graph.get_node(start_stop_id), @graph.get_node(end_stop_id), &block)
+      Graph::BfsVisitor.find_path(@graph.get_node(start_stop.id), @graph.get_node(end_stop.id), &block)
     end
 
-    # Returns the routes taken to travel from the start stop to the end stop.
-    def find_path_routes(start_stop_id, end_stop_id)
-      path = find_path(start_stop_id, end_stop_id)
+    # Returns the routes taken to travel from the start stop to the end stop.  Accepts either stop ID or name.
+    # Returns nil if no path can be found.
+    def find_path_routes(start_id_or_name, end_id_or_name)
+      path = find_path(start_id_or_name, end_id_or_name)
 
       return nil unless path.present?
 
@@ -60,6 +65,10 @@ module Transit
 
     def stops
       @stops.values
+    end
+
+    def find_stop_by_id_or_name(id_or_name)
+      @stops[id_or_name] || @stops.values.find { |stop| stop.name == id_or_name }
     end
 
     def get_stop(id)
